@@ -1,0 +1,43 @@
+{% extends "template.html" %}
+
+{% block content %}
+    <title>{{ title }} - Microblog</title>
+    <div><pre>
+        BEGIN TRY
+	BEGIN TRANSACTION;
+		SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;
+        SET QUOTED_IDENTIFIER ON
+    </pre>
+    </div>
+    {% for cip in cips %}
+        <div><pre>
+                UPDATE op
+                SET FechaCancelacion   = dateadd(minute, -20, FechaCancelacion),
+                    FechaActualizacion = GETDATE()
+                FROM pagoefectivo.ordenpago op
+                WHERE IdOrdenPago in ('idordenpago');
+
+                UPDATE op
+                SET FechaMovimiento   = dateadd(minute, -20, FechaMovimiento),
+                    FechaActualizacion = GETDATE()
+                FROM pagoefectivo.Movimiento op
+                WHERE IdOrdenPago in ('idordenpago');
+            </pre></div>
+    {% endfor %}
+
+        <div><pre>
+  	COMMIT TRANSACTION;
+	END TRY
+BEGIN CATCH
+    SELECT
+        ERROR_NUMBER() AS NUMERO_DE_ERROR,
+        ERROR_SEVERITY() AS GRAVEDAD_DEL_ERROR,
+        ERROR_STATE() AS ESTADO_DEL_ERROR,
+        ERROR_PROCEDURE() AS PROCEDIMIENTO_DEL_ERROR,
+        ERROR_LINE() AS LINEA_DE_ERROR,
+        ERROR_MESSAGE() AS MENSAJE_DE_ERROR;
+        ROLLBACK TRANSACTION
+  END CATCH
+    </pre>
+    </div>
+{% endblock %}
