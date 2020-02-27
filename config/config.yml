@@ -1,0 +1,7 @@
+db:
+  connection: "FreeTDS"
+  host: "SERVER=nat04.orbis.pe"
+  username: "usr_cgomez"
+  password: "cgomez2015"
+  port: "3401"
+  database: "BDPagoEfectivoReplicaCore"
